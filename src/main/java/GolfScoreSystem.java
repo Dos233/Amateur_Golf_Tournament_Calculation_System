@@ -1,4 +1,8 @@
 import dnl.utils.text.table.TextTable;
+
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -8,11 +12,13 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.ui.ApplicationFrame;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
 public class GolfScoreSystem extends JFrame {
     private static List customers = new ArrayList();
@@ -33,6 +39,109 @@ public class GolfScoreSystem extends JFrame {
         ChartPanel chartPanel = new ChartPanel(barChart);
         chartPanel.setPreferredSize(new java.awt.Dimension( 560 , 367 ) );
         setContentPane(chartPanel);
+    }
+    public GolfScoreSystem(String chartTitle){
+        super(chartTitle);
+        JTextField TextField1;
+        Object[][] datas=new Object[18][12];
+        Customer[] customers1=new Customer[customers.size()];
+        for (int i=0;i<customers.size();i++){
+            customers1[i]=(Customer)customers.get(i);
+        }
+        if (customers1.length==0) {
+            datas = colorIndexPar;
+        }
+        if (customers1.length==1) {
+            for (int i=0;i<colorIndexPar.length;i++){
+                    datas[i]= new Object[]{colorIndexPar[i][0], colorIndexPar[i][1], colorIndexPar[i][2], colorIndexPar[i][3], colorIndexPar[i][4], colorIndexPar[i][5], customers1[0].getHole_scores()[i]};
+            }
+        }
+        if (customers1.length==2) {
+            for (int i=0;i<colorIndexPar.length;i++){
+                datas[i]= new Object[]{colorIndexPar[i][0], colorIndexPar[i][1], colorIndexPar[i][2], colorIndexPar[i][3], colorIndexPar[i][4], colorIndexPar[i][5], customers1[0].getHole_scores()[i],customers1[1].getHole_scores()[i]};
+            }
+        }
+        if (customers1.length==3) {
+            for (int i=0;i<colorIndexPar.length;i++){
+                datas[i]= new Object[]{colorIndexPar[i][0], colorIndexPar[i][1], colorIndexPar[i][2], colorIndexPar[i][3], colorIndexPar[i][4], colorIndexPar[i][5], customers1[0].getHole_scores()[i],customers1[1].getHole_scores()[i],customers1[2].getHole_scores()[i]};
+            }
+        }
+        if (customers1.length==4) {
+            for (int i=0;i<colorIndexPar.length;i++){
+                datas[i]= new Object[]{colorIndexPar[i][0], colorIndexPar[i][1], colorIndexPar[i][2], colorIndexPar[i][3], colorIndexPar[i][4], colorIndexPar[i][5], customers1[0].getHole_scores()[i],customers1[1].getHole_scores()[i],customers1[2].getHole_scores()[i],customers1[3].getHole_scores()[i]};
+            }
+        }
+        if (customers1.length==5) {
+            for (int i=0;i<colorIndexPar.length;i++){
+                datas[i]= new Object[]{colorIndexPar[i][0], colorIndexPar[i][1], colorIndexPar[i][2], colorIndexPar[i][3], colorIndexPar[i][4], colorIndexPar[i][5], customers1[0].getHole_scores()[i],customers1[1].getHole_scores()[i],customers1[2].getHole_scores()[i],customers1[3].getHole_scores()[i],customers1[4].getHole_scores()[i]};
+            }
+        }
+        if (customers1.length==6) {
+            for (int i=0;i<colorIndexPar.length;i++){
+                datas[i]= new Object[]{colorIndexPar[i][0], colorIndexPar[i][1], colorIndexPar[i][2], colorIndexPar[i][3], colorIndexPar[i][4], colorIndexPar[i][5], customers1[0].getHole_scores()[i],customers1[1].getHole_scores()[i],customers1[2].getHole_scores()[i],customers1[3].getHole_scores()[i],customers1[4].getHole_scores()[i],customers1[5].getHole_scores()[i]};
+            }
+        }
+        String[] titles = {"No.","BLUE","WHITE","RED","Index","PAR","A","B","C","D","E","F"};
+        DefaultTableModel model = new DefaultTableModel(datas, titles);
+        JTable table = new JTable(model);
+        DefaultTableCellRenderer ter = new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table,
+                                                           Object value, boolean isSelected, boolean hasFocus,
+                                                           int row, int column) {
+                if (column == 0) {
+                    setBackground(Color.GRAY);
+                }
+                else if (column == 1) {
+                    setBackground(Color.BLUE);
+                }
+                else if (column == 2) {
+                    setBackground(Color.WHITE);
+                }
+                else if (column == 3) {
+                    setBackground(Color.RED);
+                }
+                else if (column == 4) {
+                    setBackground(Color.YELLOW);
+                }
+
+                return super.getTableCellRendererComponent(table, value,
+                        isSelected, hasFocus, row, column);
+            }
+
+        };
+        for (int i = 0; i <= 3; i++) {
+            table.getColumn(titles[i]).setCellRenderer(ter);
+        }
+        final JButton updateButton = new JButton("Update");
+        final JPanel panel = new JPanel();
+        panel.setSize(800,600);
+        getContentPane().add(panel,BorderLayout.SOUTH);
+        panel.add(new JLabel("Value: "));
+        TextField1 = new JTextField("",10);
+        panel.add(TextField1);
+        updateButton.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                int selectedRow = table.getSelectedRow();
+                int selectedColumn = table.getSelectedColumn();
+                if(selectedRow!= -1){
+                    table.setValueAt(TextField1.getText(),selectedRow, selectedColumn);
+                    if (selectedColumn<6)
+                        colorIndexPar[selectedRow][selectedColumn]=TextField1.getText(); }
+            }
+        });
+        setTableHeaderColor(table,0,Color.GRAY);
+        setTableHeaderColor(table,1,Color.BLUE);
+        setTableHeaderColor(table,2,Color.WHITE);
+        setTableHeaderColor(table,3,Color.RED);
+        setTableHeaderColor(table,4,Color.YELLOW);
+        setTableHeaderColor(table,5,Color.BLACK);
+        panel.add(updateButton);
+        table.setShowGrid(true);
+        add(new JScrollPane(table));
+        setSize(500, 500);
+        setLocationRelativeTo(null);
+        setVisible(true);
     }
 
     public static void main(String[] args) {
@@ -60,10 +169,11 @@ public class GolfScoreSystem extends JFrame {
                 for (int i=0;i<20;i++){
                     System.out.println("===================");
                     System.out.println("1. Enter customer scores");
-                    System.out.println("2. View customer scores");
-                    System.out.println("3. View customer profile");
+                    System.out.println("2. View customer scores in console");
+                    System.out.println("3. View customer profile in console");
                     System.out.println("4. Generate total results' bar chart for all customer");
-                    System.out.println("5. Exit manager menu");
+                    System.out.println("5. Generate the score chart in detail");
+                    System.out.println("6. Exit manager menu");
                     System.out.println("===================");
                     try {
                         System.out.printf("Please input serial number (e.g. 1,2) to obtain service: ");
@@ -84,6 +194,9 @@ public class GolfScoreSystem extends JFrame {
                                 chart.setVisible( true );
                                 break;
                             case 5:
+                                GolfScoreSystem chart1 = new GolfScoreSystem("Scores chart");
+                                break;
+                            case 6:
                                 break loopManager;
                             default:
                                 System.out.println("Please input correct number to continue!");
@@ -151,7 +264,7 @@ public class GolfScoreSystem extends JFrame {
                 if (customers1.length==5)
                     customerScores[i]= new Object[]{colorIndexPar[i][0], colorIndexPar[i][1], colorIndexPar[i][2]
                             , colorIndexPar[i][3], colorIndexPar[i][4], colorIndexPar[i][5],customers1[0].getHole_scores()[i],customers1[1].getHole_scores()[i],customers1[2].getHole_scores()[i],customers1[3].getHole_scores()[i],customers1[4].getHole_scores()[i]};
-                if (customers1.length==5)
+                if (customers1.length==6)
                     customerScores[i]= new Object[]{colorIndexPar[i][0], colorIndexPar[i][1], colorIndexPar[i][2]
                             , colorIndexPar[i][3], colorIndexPar[i][4], colorIndexPar[i][5],customers1[0].getHole_scores()[i],customers1[1].getHole_scores()[i],customers1[2].getHole_scores()[i],customers1[3].getHole_scores()[i],customers1[4].getHole_scores()[i],customers1[5].getHole_scores()[i]};
             }
@@ -221,15 +334,15 @@ public class GolfScoreSystem extends JFrame {
         if (customers.size()==1) {
             cus1 = customers1[0].getName();
             value1 = customers1[0].getTotal_result();
-            dataset.addValue( value1, "A" , cus1 );
+            dataset.addValue( value1,customers1[0].getName(), cus1 );
         }
         if (customers.size()==2) {
             cus1 = customers1[0].getName();
             cus2 = customers1[1].getName();
             value1 = customers1[0].getTotal_result();
             value2 = customers1[1].getTotal_result();
-            dataset.addValue( value1, "A" , cus1 );
-            dataset.addValue( value2, "B" , cus2 );
+            dataset.addValue( value1, customers1[0].getName() , cus1 );
+            dataset.addValue( value2, customers1[1].getName() , cus2 );
         }
         if (customers.size()==3) {
             cus1 = customers1[0].getName();
@@ -238,9 +351,9 @@ public class GolfScoreSystem extends JFrame {
             value1 = customers1[0].getTotal_result();
             value2 = customers1[1].getTotal_result();
             value3 = customers1[2].getTotal_result();
-            dataset.addValue( value1, "A" , cus1 );
-            dataset.addValue( value2, "B" , cus2 );
-            dataset.addValue( value3, "C" , cus3);
+            dataset.addValue( value1, customers1[0].getName() , cus1 );
+            dataset.addValue( value2, customers1[1].getName() , cus2 );
+            dataset.addValue( value3, customers1[2].getName() , cus3);
         }
         if (customers.size()==4) {
             cus1 = customers1[0].getName();
@@ -251,10 +364,10 @@ public class GolfScoreSystem extends JFrame {
             value2 = customers1[1].getTotal_result();
             value3 = customers1[2].getTotal_result();
             value4 = customers1[3].getTotal_result();
-            dataset.addValue( value1, "A" , cus1 );
-            dataset.addValue( value2, "B" , cus2 );
-            dataset.addValue( value3, "C" , cus3);
-            dataset.addValue( value4, "D" , cus4);
+            dataset.addValue( value1, customers1[0].getName() , cus1 );
+            dataset.addValue( value2, customers1[1].getName() , cus2 );
+            dataset.addValue( value3, customers1[2].getName() , cus3);
+            dataset.addValue( value4, customers1[3].getName() , cus4);
         }
         if (customers.size()==5) {
             cus1 = customers1[0].getName();
@@ -267,11 +380,11 @@ public class GolfScoreSystem extends JFrame {
             value3 = customers1[2].getTotal_result();
             value4 = customers1[3].getTotal_result();
             value5 = customers1[4].getTotal_result();
-            dataset.addValue( value1, "A" , cus1 );
-            dataset.addValue( value2, "B" , cus2 );
-            dataset.addValue( value3, "C" , cus3);
-            dataset.addValue( value4, "D" , cus4);
-            dataset.addValue( value5, "E" , cus5);
+            dataset.addValue( value1, customers1[0].getName() , cus1 );
+            dataset.addValue( value2, customers1[1].getName() , cus2 );
+            dataset.addValue( value3, customers1[2].getName() , cus3);
+            dataset.addValue( value4, customers1[3].getName() , cus4);
+            dataset.addValue( value5, customers1[4].getName() , cus5);
         }
         if (customers.size()==6) {
             cus1 = customers1[0].getName();
@@ -286,13 +399,48 @@ public class GolfScoreSystem extends JFrame {
             value4 = customers1[3].getTotal_result();
             value5 = customers1[4].getTotal_result();
             value6 = customers1[5].getTotal_result();
-            dataset.addValue( value1, "A" , cus1 );
-            dataset.addValue( value2, "B" , cus2 );
-            dataset.addValue( value3, "C" , cus3);
-            dataset.addValue( value4, "D" , cus4);
-            dataset.addValue( value5, "E" , cus5);
-            dataset.addValue( value6, "E" , cus6);
+            dataset.addValue( value1, customers1[0].getName() , cus1 );
+            dataset.addValue( value2, customers1[1].getName() , cus2 );
+            dataset.addValue( value3, customers1[2].getName() , cus3);
+            dataset.addValue( value4, customers1[3].getName() , cus4);
+            dataset.addValue( value5, customers1[4].getName() , cus5);
+            dataset.addValue( value6, customers1[5].getName() , cus6);
         }
         return dataset;
+    }
+    public static void setTableHeaderColor(JTable table, int columnIndex, Color c) {
+        TableColumn column = table.getTableHeader().getColumnModel().getColumn(columnIndex);
+        DefaultTableCellRenderer cellRenderer = new DefaultTableCellRenderer() {
+
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                                                           boolean hasFocus, int row, int column) {
+
+                setHorizontalAlignment(JLabel.CENTER);
+                ((DefaultTableCellRenderer) table.getTableHeader().getDefaultRenderer())
+                        .setHorizontalAlignment(DefaultTableCellRenderer.CENTER);
+
+                return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            }
+        };
+        TableColumn column5 = table.getTableHeader().getColumnModel().getColumn(5);
+        DefaultTableCellRenderer cellRenderer1 = new DefaultTableCellRenderer() {
+
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                                                           boolean hasFocus, int row, int column5) {
+
+                setHorizontalAlignment(JLabel.CENTER);
+                ((DefaultTableCellRenderer) table.getTableHeader().getDefaultRenderer())
+                        .setHorizontalAlignment(DefaultTableCellRenderer.CENTER);
+
+                return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column5);
+            }
+        };
+        cellRenderer.setBackground(c);
+        cellRenderer1.setBackground(c);
+        cellRenderer1.setForeground(Color.white);
+        column.setHeaderRenderer(cellRenderer);
+        column5.setHeaderRenderer(cellRenderer1);
     }
 }

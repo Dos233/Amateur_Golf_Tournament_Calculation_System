@@ -1,3 +1,4 @@
+import de.vandermeer.asciitable.AsciiTable;
 import dnl.utils.text.table.TextTable;
 
 import java.awt.*;
@@ -272,38 +273,110 @@ public class GolfScoreSystem extends JFrame {
         String[] columnNames = {"No.","BLUE","WHITE","RED","Index","PAR","A","B","C","D","E","F"};
         TextTable resultTable = new TextTable(columnNames,customerScores);
         resultTable.printTable();
-        if (customers1.length==1)
+
+        AsciiTable at = new AsciiTable();
+        at.addRule();
+        if (customers1.length==0){
+            at.addRow("Customer:");
+            at.addRule();
+            at.addRow("Gross:");
+            at.addRule();
+            at.addRow("Handicap:");
+            at.addRule();
+            at.addRow("NetScore:");
+        }
+        if (customers1.length==1) {
+            at.addRow("Customer:", "A");
+            at.addRule();
+            at.addRow("Gross:",customers1[0].getTotal_result());
+            at.addRule();
+            at.addRow("Handicap:",customers1[0].getHandicap());
+            at.addRule();
+            at.addRow("NetScore:",customers1[0].getTotal_result()-Integer.parseInt(customers1[0].getHandicap()));
+        }
+        if (customers1.length==2) {
+            at.addRow("Customer:", "A", "B");
+            at.addRule();
+            at.addRow("Gross:",customers1[0].getTotal_result(),customers1[1].getTotal_result());
+            at.addRule();
+            at.addRow("Handicap:",customers1[0].getHandicap(),customers1[1].getHandicap());
+            at.addRule();
+            at.addRow("NetScore:",customers1[0].getTotal_result()-Integer.parseInt(customers1[0].getHandicap()),customers1[1].getTotal_result()-Integer.parseInt(customers1[1].getHandicap()));
+        }
+        if (customers1.length==3) {
+            at.addRow("Customer:", "A", "B", "C");
+            at.addRule();
+            at.addRow("Gross:",customers1[0].getTotal_result(),customers1[1].getTotal_result(),customers1[2].getTotal_result());
+            at.addRule();
+            at.addRow("Handicap:",customers1[0].getHandicap(),customers1[1].getHandicap(),customers1[2].getHandicap());
+            at.addRule();
+            at.addRow("NetScore:",customers1[0].getTotal_result()-Integer.parseInt(customers1[0].getHandicap()),customers1[1].getTotal_result()-Integer.parseInt(customers1[1].getHandicap()),customers1[2].getTotal_result()-Integer.parseInt(customers1[2].getHandicap()));
+        }
+        if (customers1.length==4) {
+            at.addRow("Customer:", "A", "B", "C", "D");
+            at.addRule();
+            at.addRow("Gross:",customers1[0].getTotal_result(),customers1[1].getTotal_result(),customers1[2].getTotal_result(),customers1[3].getTotal_result());
+            at.addRule();
+            at.addRow("Handicap:",customers1[0].getHandicap(),customers1[1].getHandicap(),customers1[2].getHandicap(),customers1[3].getHandicap());
+            at.addRule();
+            at.addRow("NetScore:",customers1[0].getTotal_result()-Integer.parseInt(customers1[0].getHandicap()),customers1[1].getTotal_result()-Integer.parseInt(customers1[1].getHandicap()),customers1[2].getTotal_result()-Integer.parseInt(customers1[3].getHandicap()),customers1[3].getTotal_result()-Integer.parseInt(customers1[3].getHandicap()));
+        }
+        if (customers1.length==5) {
+            at.addRow("Customer:", "A", "B", "C", "D", "E");
+            at.addRule();
+            at.addRow("Gross:",customers1[0].getTotal_result(),customers1[1].getTotal_result(),customers1[2].getTotal_result(),customers1[3].getTotal_result(),customers1[3].getTotal_result(),customers1[4].getTotal_result());
+            at.addRule();
+            at.addRow("Handicap:",customers1[0].getHandicap(),customers1[1].getHandicap(),customers1[2].getHandicap(),customers1[3].getHandicap(),customers1[4].getHandicap());
+            at.addRule();
+            at.addRow("NetScore:",customers1[0].getTotal_result()-Integer.parseInt(customers1[0].getHandicap()),customers1[1].getTotal_result()-Integer.parseInt(customers1[1].getHandicap()),customers1[2].getTotal_result()-Integer.parseInt(customers1[3].getHandicap()),customers1[3].getTotal_result()-Integer.parseInt(customers1[3].getHandicap()),customers1[4].getTotal_result()-Integer.parseInt(customers1[4].getHandicap()));
+        }
+        if (customers1.length==6) {
+            at.addRow("Customer:", "A", "B", "C", "D", "E", "F");
+            at.addRule();
+            at.addRow("Gross:",customers1[0].getTotal_result(),customers1[1].getTotal_result(),customers1[2].getTotal_result(),customers1[3].getTotal_result(),customers1[3].getTotal_result(),customers1[4].getTotal_result(),customers1[5].getTotal_result());
+            at.addRule();
+            at.addRow("Handicap:",customers1[0].getHandicap(),customers1[1].getHandicap(),customers1[2].getHandicap(),customers1[3].getHandicap(),customers1[4].getHandicap(),customers1[5].getHandicap());
+            at.addRule();
+            at.addRow("NetScore:",customers1[0].getTotal_result()-Integer.parseInt(customers1[0].getHandicap()),customers1[1].getTotal_result()-Integer.parseInt(customers1[1].getHandicap()),customers1[2].getTotal_result()-Integer.parseInt(customers1[3].getHandicap()),customers1[3].getTotal_result()-Integer.parseInt(customers1[3].getHandicap()),customers1[4].getTotal_result()-Integer.parseInt(customers1[4].getHandicap()),customers1[5].getTotal_result()-Integer.parseInt(customers1[5].getHandicap()));
+        }
+        at.addRule();
+        String rend = at.render();
+        System.out.println(rend);
+
+
+
+        /*if (customers1.length==1)
             System.out.println("Total result of A:"+customers1[0].getTotal_result());
         if (customers1.length==2) {
             System.out.println("Total result of A:" + customers1[0].getTotal_result());
-            System.out.println("Total result of A:" + customers1[1].getTotal_result());
+            System.out.println("Total result of B:" + customers1[1].getTotal_result());
         }
         if (customers1.length==3) {
             System.out.println("Total result of A:"+customers1[0].getTotal_result());
-            System.out.println("Total result of A:"+customers1[1].getTotal_result());
-            System.out.println("Total result of A:" + customers1[2].getTotal_result());
+            System.out.println("Total result of B:"+customers1[1].getTotal_result());
+            System.out.println("Total result of C:" + customers1[2].getTotal_result());
         }
         if (customers1.length==4) {
             System.out.println("Total result of A:"+customers1[0].getTotal_result());
-            System.out.println("Total result of A:"+customers1[1].getTotal_result());
-            System.out.println("Total result of A:" + customers1[2].getTotal_result());
-            System.out.println("Total result of A:" + customers1[3].getTotal_result());
+            System.out.println("Total result of B:"+customers1[1].getTotal_result());
+            System.out.println("Total result of C:" + customers1[2].getTotal_result());
+            System.out.println("Total result of D:" + customers1[3].getTotal_result());
         }
         if (customers1.length==5) {
             System.out.println("Total result of A:"+customers1[0].getTotal_result());
-            System.out.println("Total result of A:"+customers1[1].getTotal_result());
-            System.out.println("Total result of A:" + customers1[2].getTotal_result());
-            System.out.println("Total result of A:" + customers1[3].getTotal_result());
-            System.out.println("Total result of A:" + customers1[4].getTotal_result());
+            System.out.println("Total result of B:"+customers1[1].getTotal_result());
+            System.out.println("Total result of C:" + customers1[2].getTotal_result());
+            System.out.println("Total result of D:" + customers1[3].getTotal_result());
+            System.out.println("Total result of E:" + customers1[4].getTotal_result());
         }
         if (customers1.length==6) {
             System.out.println("Total result of A:"+customers1[0].getTotal_result());
-            System.out.println("Total result of A:"+customers1[1].getTotal_result());
-            System.out.println("Total result of A:" + customers1[2].getTotal_result());
-            System.out.println("Total result of A:" + customers1[3].getTotal_result());
-            System.out.println("Total result of A:" + customers1[4].getTotal_result());
-            System.out.println("Total result of A:" + customers1[5].getTotal_result());
-        }
+            System.out.println("Total result of B:"+customers1[1].getTotal_result());
+            System.out.println("Total result of C:" + customers1[2].getTotal_result());
+            System.out.println("Total result of D:" + customers1[3].getTotal_result());
+            System.out.println("Total result of E:" + customers1[4].getTotal_result());
+            System.out.println("Total result of F:" + customers1[5].getTotal_result());
+        }*/
     }
 
     public static void viewCustomerProfile(){

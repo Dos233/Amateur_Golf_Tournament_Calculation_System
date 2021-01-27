@@ -1,13 +1,10 @@
-import de.vandermeer.asciitable.AsciiTable;
 import dnl.utils.text.table.TextTable;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -27,7 +24,6 @@ public class GolfScoreSystem extends JFrame {
             ,{4,366,352,337,13,4},{5,480,458,443,5,5},{6,209,191,163,11,3},{7,380,356,331,1,4},{8,179,149,139,17,3}
             ,{9,384,329,293,7,4},{10,297,284,256,12,4},{11,387,357,332,2,4},{12,132,124,109,18,3},{13,471,446,392,6,5}
             ,{14,187,156,132,16,3},{15,359,339,317,10,4},{16,338,317,300,14,4},{17,481,460,422,8,5},{18,352,329,293,4,4}};
-
     public GolfScoreSystem(String applicationTitle,String chartTitle) {
         super(chartTitle);
         JFreeChart barChart = ChartFactory.createBarChart(
@@ -54,7 +50,7 @@ public class GolfScoreSystem extends JFrame {
         }
         if (customers1.length==1) {
             for (int i=0;i<colorIndexPar.length;i++){
-                    datas[i]= new Object[]{colorIndexPar[i][0], colorIndexPar[i][1], colorIndexPar[i][2], colorIndexPar[i][3], colorIndexPar[i][4], colorIndexPar[i][5], customers1[0].getHole_scores()[i]};
+                datas[i]= new Object[]{colorIndexPar[i][0], colorIndexPar[i][1], colorIndexPar[i][2], colorIndexPar[i][3], colorIndexPar[i][4], colorIndexPar[i][5], customers1[0].getHole_scores()[i]};
             }
         }
         if (customers1.length==2) {
@@ -82,6 +78,10 @@ public class GolfScoreSystem extends JFrame {
                 datas[i]= new Object[]{colorIndexPar[i][0], colorIndexPar[i][1], colorIndexPar[i][2], colorIndexPar[i][3], colorIndexPar[i][4], colorIndexPar[i][5], customers1[0].getHole_scores()[i],customers1[1].getHole_scores()[i],customers1[2].getHole_scores()[i],customers1[3].getHole_scores()[i],customers1[4].getHole_scores()[i],customers1[5].getHole_scores()[i]};
             }
         }
+        for (int i=0;i<customers.size();i++){
+            customers1[i]=(Customer)customers.get(i);
+        }
+
         String[] titles = {"No.","BLUE","WHITE","RED","Index","PAR","A","B","C","D","E","F"};
         DefaultTableModel model = new DefaultTableModel(datas, titles);
         JTable table = new JTable(model);
@@ -128,7 +128,8 @@ public class GolfScoreSystem extends JFrame {
                 if(selectedRow!= -1){
                     table.setValueAt(TextField1.getText(),selectedRow, selectedColumn);
                     if (selectedColumn<6)
-                        colorIndexPar[selectedRow][selectedColumn]=TextField1.getText(); }
+                        colorIndexPar[selectedRow][selectedColumn]=TextField1.getText();
+                    }
             }
         });
         setTableHeaderColor(table,0,Color.GRAY);
@@ -147,7 +148,7 @@ public class GolfScoreSystem extends JFrame {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        String choice_1;
+        String choice_1="";
         String name = "";
         String club = "";
         String handicap = "";
@@ -155,21 +156,10 @@ public class GolfScoreSystem extends JFrame {
         System.out.println("=== Welcome to amateur Golf tournament system ===");
         loopChoice:
         for (int a=0;a<20;a++){
-            String choice_temp = scanner.nextLine();
-            System.out.printf("Are you customer or manager? C(customer) / M(manager): ");
-            choice_1 = scanner.nextLine();
-            if (choice_1.equals("C")){
-                System.out.printf("Please enter your name: ");
-                name = scanner.nextLine();
-                System.out.printf("Please enter your club: ");
-                club = scanner.nextLine();
-                System.out.printf("Please enter your handicap: ");
-                handicap = scanner.nextLine();
-            }else if (choice_1.equals("M")){
                 loopManager:
                 for (int i=0;i<20;i++){
                     System.out.println("===================");
-                    System.out.println("1. Enter customer scores");
+                    System.out.println("1. Enter customer Info");
                     System.out.println("2. View customer scores in console");
                     System.out.println("3. View customer profile in console");
                     System.out.println("4. Generate total results' bar chart for all customer");
@@ -209,24 +199,32 @@ public class GolfScoreSystem extends JFrame {
                         continue;
                     }
                 }
-            }else {
-                System.out.println("Please enter capital 'C' or capital 'M' to continue!");
-                continue;
-            }
         }
         }
 
     public static void enterCustomerProfile(String choice_1,String name,String club,String handicap) {
         Scanner scanner = new Scanner(System.in);
-        Customer customer = new Customer();
-            int[] scores = new int[18];
-            int j;
-            int sum=0;
+        int j;
         Customer[] customers1=new Customer[customers.size()];
         for (int i=0;i<customers.size();i++){
             customers1[i]=(Customer)customers.get(i);
         }
-        for (int i=0;i<18;i++){
+
+        System.out.printf("Please enter the customer size: ");
+        int  customerSize = scanner.nextInt();
+        for (int d=0;d<customerSize;d++){
+            int sum=0;
+            int[] scores = new int[18];
+            Customer customer = new Customer();
+            String temp = scanner.nextLine();
+            System.out.printf("Please enter your name: ");
+            name = scanner.nextLine();
+            System.out.printf("Please enter your club: ");
+            club = scanner.nextLine();
+            System.out.printf("Please enter your handicap: ");
+            handicap = scanner.nextLine();
+
+            for (int i=0;i<18;i++){
                 j=i+1;
                 System.out.printf("Hole_"+j+" score: ");
                 scores[i]=scanner.nextInt();
@@ -238,43 +236,104 @@ public class GolfScoreSystem extends JFrame {
             customer.setHandicap(handicap);
             customer.setTotal_result(sum);
             customers.add(customer);
+        }
+
     }
 
     public static void viewCustomerScores(){
-        Object[][] customerScores=new Object[18][];
+        Object[][] customerScores=new Object[customers.size()][22];
+        Object[][] customerScores1=new Object[customers.size()][3];
+        Object[][] customerScores2=new Object[customers.size()][5];
         Customer[] customers1=new Customer[customers.size()];
+        String[] columnNames = new String[22];
+        String[] columnNames1 = {"No.","Name","Gross"};
+        String[] columnNames2 = {"No.","Name","Gross","Handicap","Net-Score"};
+
+        columnNames[0]= "No.";
+        columnNames[1]= "Name";
+        columnNames[2]= "Index";
+        columnNames[3]= "Par";
 
         for (int i=0;i<customers.size();i++){
             customers1[i]=(Customer)customers.get(i);
         }
 
-        for (int i=0;i<18;i++){
-            for (int j=0;j<customers.size();j++){
-                if (customers1.length==1)
-                    customerScores[i]= new Object[]{colorIndexPar[i][0], colorIndexPar[i][1], colorIndexPar[i][2]
-                            , colorIndexPar[i][3], colorIndexPar[i][4], colorIndexPar[i][5],customers1[0].getHole_scores()[i]};
-                if (customers1.length==2)
-                    customerScores[i]= new Object[]{colorIndexPar[i][0], colorIndexPar[i][1], colorIndexPar[i][2]
-                            , colorIndexPar[i][3], colorIndexPar[i][4], colorIndexPar[i][5],customers1[0].getHole_scores()[i],customers1[1].getHole_scores()[i]};
-                if (customers1.length==3)
-                    customerScores[i]= new Object[]{colorIndexPar[i][0], colorIndexPar[i][1], colorIndexPar[i][2]
-                            , colorIndexPar[i][3], colorIndexPar[i][4], colorIndexPar[i][5],customers1[0].getHole_scores()[i],customers1[1].getHole_scores()[i],customers1[2].getHole_scores()[i]};
-                if (customers1.length==4)
-                    customerScores[i]= new Object[]{colorIndexPar[i][0], colorIndexPar[i][1], colorIndexPar[i][2]
-                            , colorIndexPar[i][3], colorIndexPar[i][4], colorIndexPar[i][5],customers1[0].getHole_scores()[i],customers1[1].getHole_scores()[i],customers1[2].getHole_scores()[i],customers1[3].getHole_scores()[i]};
-                if (customers1.length==5)
-                    customerScores[i]= new Object[]{colorIndexPar[i][0], colorIndexPar[i][1], colorIndexPar[i][2]
-                            , colorIndexPar[i][3], colorIndexPar[i][4], colorIndexPar[i][5],customers1[0].getHole_scores()[i],customers1[1].getHole_scores()[i],customers1[2].getHole_scores()[i],customers1[3].getHole_scores()[i],customers1[4].getHole_scores()[i]};
-                if (customers1.length==6)
-                    customerScores[i]= new Object[]{colorIndexPar[i][0], colorIndexPar[i][1], colorIndexPar[i][2]
-                            , colorIndexPar[i][3], colorIndexPar[i][4], colorIndexPar[i][5],customers1[0].getHole_scores()[i],customers1[1].getHole_scores()[i],customers1[2].getHole_scores()[i],customers1[3].getHole_scores()[i],customers1[4].getHole_scores()[i],customers1[5].getHole_scores()[i]};
+        for (int i=0;i<customers.size();i++){
+            customerScores[i][0]= i;
+            customerScores[i][1]= customers1[i].getName();
+            customerScores[i][2]= colorIndexPar[i][4];
+            customerScores[i][3]= colorIndexPar[i][5];
+
+
+            for (int j=0;j<18;j++){
+                    customerScores[i][4+j] = customers1[i].getHole_scores()[j];
+                    if (i==0){
+                        columnNames[4+j] = "Hole_"+j;
+                    }
             }
         }
-        String[] columnNames = {"No.","BLUE","WHITE","RED","Index","PAR","A","B","C","D","E","F"};
+        /*String[] columnNames = {"No.","Index","Par","A","B","C","D","E","F"};*/
         TextTable resultTable = new TextTable(columnNames,customerScores);
         resultTable.printTable();
 
-        AsciiTable at = new AsciiTable();
+        int[] storePosition = new int[customers.size()];
+        int[] dummyArray = new int[customers.size()];
+        for (int i=0;i<customers.size();i++){
+            if (i==0){
+                for (int x=0;x<customers.size();x++){
+                    dummyArray[x]=customers1[x].getTotal_result();
+                    storePosition[x]=x;
+                }
+            }
+            for (int b=i;b<customers.size();b++){
+                if (dummyArray[i]>dummyArray[b]){
+                    int temp=dummyArray[i];
+                    dummyArray[i]=dummyArray[b];
+                    dummyArray[b]=temp;
+                    int temp1=storePosition[i];
+                    storePosition[i]=storePosition[b];
+                    storePosition[b]=temp1;
+                }
+            }
+        }
+        for (int i=0;i<customers.size();i++){
+            customerScores1[i]= new Object[]{i, customers1[storePosition[i]].getName(), customers1[storePosition[i]].getTotal_result()};
+        }
+        TextTable resultTable1 = new TextTable(columnNames1,customerScores1);
+        resultTable1.printTable();
+
+
+        int[] storePosition2 = new int[customers.size()];
+        int[] dummyArray2 = new int[customers.size()];
+
+        for (int i=0;i<customers.size();i++){
+            if (i==0){
+                for (int x=0;x<customers.size();x++){
+                    dummyArray2[x]=customers1[x].getTotal_result()-Integer.parseInt(customers1[x].getHandicap());
+                    storePosition2[x]=x;
+                }
+            }
+            for (int b=i+1;b<customers.size();b++){
+                if (dummyArray2[i]>dummyArray2[b]){
+                    int temp=dummyArray2[i];
+                    dummyArray2[i]=dummyArray2[b];
+                    dummyArray2[b]=temp;
+                    int temp1=storePosition2[i];
+                    storePosition2[i]=storePosition2[b];
+                    storePosition2[b]=temp1;
+
+                }
+            }
+
+        }
+        for (int i=0;i<customers.size();i++){
+            customerScores2[i]= new Object[]{i, customers1[storePosition2[i]].getName(), customers1[storePosition2[i]].getTotal_result(),Integer.parseInt(customers1[storePosition2[i]].getHandicap()),customers1[storePosition2[i]].getTotal_result()-Integer.parseInt(customers1[storePosition2[i]].getHandicap())};
+            //customerScores2[i]= new Object[]{i, customers1[i].getName(), customers1[i].getTotal_result(),Integer.parseInt(customers1[i].getHandicap()),customers1[i].getTotal_result()-Integer.parseInt(customers1[i].getHandicap())};
+            }
+        TextTable resultTable2 = new TextTable(columnNames2,customerScores2);
+        resultTable2.printTable();
+
+        /*AsciiTable at = new AsciiTable();
         at.addRule();
         if (customers1.length==0){
             at.addRow("Customer:");
@@ -341,42 +400,7 @@ public class GolfScoreSystem extends JFrame {
         }
         at.addRule();
         String rend = at.render();
-        System.out.println(rend);
-
-
-
-        /*if (customers1.length==1)
-            System.out.println("Total result of A:"+customers1[0].getTotal_result());
-        if (customers1.length==2) {
-            System.out.println("Total result of A:" + customers1[0].getTotal_result());
-            System.out.println("Total result of B:" + customers1[1].getTotal_result());
-        }
-        if (customers1.length==3) {
-            System.out.println("Total result of A:"+customers1[0].getTotal_result());
-            System.out.println("Total result of B:"+customers1[1].getTotal_result());
-            System.out.println("Total result of C:" + customers1[2].getTotal_result());
-        }
-        if (customers1.length==4) {
-            System.out.println("Total result of A:"+customers1[0].getTotal_result());
-            System.out.println("Total result of B:"+customers1[1].getTotal_result());
-            System.out.println("Total result of C:" + customers1[2].getTotal_result());
-            System.out.println("Total result of D:" + customers1[3].getTotal_result());
-        }
-        if (customers1.length==5) {
-            System.out.println("Total result of A:"+customers1[0].getTotal_result());
-            System.out.println("Total result of B:"+customers1[1].getTotal_result());
-            System.out.println("Total result of C:" + customers1[2].getTotal_result());
-            System.out.println("Total result of D:" + customers1[3].getTotal_result());
-            System.out.println("Total result of E:" + customers1[4].getTotal_result());
-        }
-        if (customers1.length==6) {
-            System.out.println("Total result of A:"+customers1[0].getTotal_result());
-            System.out.println("Total result of B:"+customers1[1].getTotal_result());
-            System.out.println("Total result of C:" + customers1[2].getTotal_result());
-            System.out.println("Total result of D:" + customers1[3].getTotal_result());
-            System.out.println("Total result of E:" + customers1[4].getTotal_result());
-            System.out.println("Total result of F:" + customers1[5].getTotal_result());
-        }*/
+        System.out.println(rend);*/
     }
 
     public static void viewCustomerProfile(){

@@ -268,7 +268,7 @@ public class GolfScoreSystem extends JFrame {
             for (int j=0;j<18;j++){
                     customerScores[i][4+j] = customers1[i].getHole_scores()[j];
                     if (i==0){
-                        columnNames[4+j] = "Hole_"+j;
+                        columnNames[4+j] = "Hole_"+(j+1);
                     }
             }
         }
@@ -297,7 +297,7 @@ public class GolfScoreSystem extends JFrame {
             }
         }
         for (int i=0;i<customers.size();i++){
-            customerScores1[i]= new Object[]{i, customers1[storePosition[i]].getName(), customers1[storePosition[i]].getTotal_result()};
+            customerScores1[i]= new Object[]{(i+1), customers1[storePosition[i]].getName(), customers1[storePosition[i]].getTotal_result()};
         }
         TextTable resultTable1 = new TextTable(columnNames1,customerScores1);
         resultTable1.printTable();
@@ -327,7 +327,7 @@ public class GolfScoreSystem extends JFrame {
 
         }
         for (int i=0;i<customers.size();i++){
-            customerScores2[i]= new Object[]{i, customers1[storePosition2[i]].getName(), customers1[storePosition2[i]].getTotal_result(),Integer.parseInt(customers1[storePosition2[i]].getHandicap()),customers1[storePosition2[i]].getTotal_result()-Integer.parseInt(customers1[storePosition2[i]].getHandicap())};
+            customerScores2[i]= new Object[]{(i+1), customers1[storePosition2[i]].getName(), customers1[storePosition2[i]].getTotal_result(),Integer.parseInt(customers1[storePosition2[i]].getHandicap()),customers1[storePosition2[i]].getTotal_result()-Integer.parseInt(customers1[storePosition2[i]].getHandicap())};
             //customerScores2[i]= new Object[]{i, customers1[i].getName(), customers1[i].getTotal_result(),Integer.parseInt(customers1[i].getHandicap()),customers1[i].getTotal_result()-Integer.parseInt(customers1[i].getHandicap())};
             }
         TextTable resultTable2 = new TextTable(columnNames2,customerScores2);

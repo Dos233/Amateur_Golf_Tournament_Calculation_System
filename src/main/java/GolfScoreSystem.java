@@ -241,34 +241,43 @@ public class GolfScoreSystem extends JFrame {
     }
 
     public static void viewCustomerScores(){
-        Object[][] customerScores=new Object[customers.size()][22];
+        Object[][] customerScores=new Object[customers.size()+2][20];
         Object[][] customerScores1=new Object[customers.size()][3];
         Object[][] customerScores2=new Object[customers.size()][5];
         Customer[] customers1=new Customer[customers.size()];
-        String[] columnNames = new String[22];
+        String[] columnNames = new String[20];
         String[] columnNames1 = {"No.","Name","Gross"};
         String[] columnNames2 = {"No.","Name","Gross","Handicap","Net-Score"};
 
         columnNames[0]= "No.";
         columnNames[1]= "Name";
-        columnNames[2]= "Index";
-        columnNames[3]= "Par";
 
         for (int i=0;i<customers.size();i++){
             customers1[i]=(Customer)customers.get(i);
         }
 
         for (int i=0;i<customers.size();i++){
-            customerScores[i][0]= i;
-            customerScores[i][1]= customers1[i].getName();
-            customerScores[i][2]= colorIndexPar[i][4];
-            customerScores[i][3]= colorIndexPar[i][5];
+            customerScores[2+i][0]= i;
+            customerScores[2+i][1]= customers1[i].getName();
+            customerScores[0][0]="";
+            customerScores[1][0]="";
+            customerScores[0][1]="Index";
+            customerScores[1][1]="Par";
+
+
+
+               int counter=0;
+                for (int y=2;y<20;y++){
+                    customerScores[0][y]=colorIndexPar[counter][4];
+                    customerScores[1][y]=colorIndexPar[counter][5];
+                    counter++;
+                }
 
 
             for (int j=0;j<18;j++){
-                    customerScores[i][4+j] = customers1[i].getHole_scores()[j];
+                    customerScores[i+2][2+j] = customers1[i].getHole_scores()[j];
                     if (i==0){
-                        columnNames[4+j] = "Hole_"+(j+1);
+                        columnNames[2+j] = "Hole_"+(j+1);
                     }
             }
         }

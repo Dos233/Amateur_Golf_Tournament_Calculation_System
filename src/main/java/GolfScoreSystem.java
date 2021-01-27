@@ -257,7 +257,7 @@ public class GolfScoreSystem extends JFrame {
         }
 
         for (int i=0;i<customers.size();i++){
-            customerScores[2+i][0]= i;
+            customerScores[2+i][0]= i+1;
             customerScores[2+i][1]= customers1[i].getName();
             customerScores[0][0]="";
             customerScores[1][0]="";

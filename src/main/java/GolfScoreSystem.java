@@ -127,9 +127,19 @@ public class GolfScoreSystem extends JFrame {
                 int selectedColumn = table.getSelectedColumn();
                 if(selectedRow!= -1){
                     table.setValueAt(TextField1.getText(),selectedRow, selectedColumn);
-                    if (selectedColumn<6)
-                        colorIndexPar[selectedRow][selectedColumn]=TextField1.getText();
+                    if (selectedColumn<6) {
+                        colorIndexPar[selectedRow][selectedColumn] = TextField1.getText();
+                    }else if (selectedColumn>=6&&selectedColumn<(6+customers1.length)) {
+                        Customer[] customers1=new Customer[customers.size()];
+                        for (int i=0;i<customers.size();i++){
+                            customers1[i]=(Customer)customers.get(i);
+                        }
+                        int[] temp = customers1[selectedColumn-6].getHole_scores();
+                        temp[selectedColumn-6]=Integer.parseInt(TextField1.getText());
+                        customers1[selectedColumn-6].setHole_scores(temp);
+                        customers.set(6-selectedColumn,customers1[selectedColumn-6]);
                     }
+                }
             }
         });
         setTableHeaderColor(table,0,Color.GRAY);
@@ -163,10 +173,11 @@ public class GolfScoreSystem extends JFrame {
                     System.out.println("3. View customers' gross scores in console");
                     System.out.println("4. View customers' net scores in console");
                     System.out.println("5. View handicap of the day calculation");
-                    System.out.println("6. View customer profile in console");
-                    System.out.println("7. Generate total results' bar chart for all customer");
-                    System.out.println("8. Generate the score chart in detail");
-                    System.out.println("9. Exit the program");
+                    System.out.println("6. View net scores of the day calculation");
+                    System.out.println("7. View customer profile in console");
+                    System.out.println("8. Generate total results' bar chart for all customer");
+                    System.out.println("9. Generate the score chart in detail");
+                    System.out.println("10. Exit the program");
                     System.out.println("===================");
                     try {
                         System.out.printf("Please input serial number (e.g. 1,2) to obtain service: ");
@@ -188,17 +199,20 @@ public class GolfScoreSystem extends JFrame {
                                 viewHandicapCalculation();
                                 break;
                             case 6:
-                                viewCustomerProfile();
+                                viewNetScoreOfDayCalculation();
                                 break;
                             case 7:
+                                viewCustomerProfile();
+                                break;
+                            case 8:
                                 GolfScoreSystem chart = new GolfScoreSystem("Bar Chart","Total Calculation bar Chart");
                                 chart.pack();
                                 chart.setVisible( true );
                                 break;
-                            case 8:
+                            case 9:
                                 GolfScoreSystem chart1 = new GolfScoreSystem("Scores chart");
                                 break;
-                            case 9:
+                            case 10:
                                 System.out.printf("Do you really want to exit the program? y/n: ");
                                 String choice_exit1 = scanner.nextLine();
                                 String choice_exit = scanner.nextLine();
@@ -218,6 +232,63 @@ public class GolfScoreSystem extends JFrame {
                 }
         }
     }
+    public static void viewNetScoreOfDayCalculation(){
+        Customer[] customers1=new Customer[customers.size()];
+        Object[][] customerScores2=new Object[customers.size()][5];
+        String[] columnNames2 = {"No.","Name","Gross","Handicap","Net-Score"};
+        for (int i=0;i<customers.size();i++){
+            customers1[i]=(Customer)customers.get(i);
+        }
+        int[] storePosition2 = new int[customers.size()];
+        int[] dummyArray2 = new int[customers.size()];
+
+        for (int i=0;i<customers.size();i++){
+            if (i==0){
+                for (int x=0;x<customers.size();x++){
+                    dummyArray2[x]=customers1[x].getTotal_result()-Integer.parseInt(customers1[x].getHandicap());
+                    storePosition2[x]=x;
+                }
+            }
+            for (int b=i+1;b<customers.size();b++){
+                if (dummyArray2[i]>dummyArray2[b]){
+                    int temp=dummyArray2[i];
+                    dummyArray2[i]=dummyArray2[b];
+                    dummyArray2[b]=temp;
+                    int temp1=storePosition2[i];
+                    storePosition2[i]=storePosition2[b];
+                    storePosition2[b]=temp1;
+
+                }
+            }
+        }
+
+        int[] handicapOfDay = new int[customers1.length];
+        for (int x=0;x<customers1.length;x++) {
+            int sumHandicap = 0;
+            //System.out.println("Customer length: "+customers1.length);
+            for (int a = 0; a < 18; a++) {
+                int temp1 = customers1[x].getHole_scores()[a] - Integer.parseInt(colorIndexPar[a][5].toString());
+                if (temp1 >= 2) {
+                    sumHandicap += 0;
+                } else if (temp1 <= 0) {
+                    sumHandicap += 2;
+                } else if (temp1 == 1) {
+                    sumHandicap += 1;
+                }
+            }
+            //System.out.println("sumHandicap: "+sumHandicap);
+            int temp = 36-sumHandicap;
+            handicapOfDay[x] = temp;
+        }
+
+        for (int i=0;i<customers.size();i++){
+            customerScores2[i]= new Object[]{(i+1), customers1[storePosition2[i]].getName(), customers1[storePosition2[i]].getTotal_result(),handicapOfDay[i],customers1[storePosition2[i]].getTotal_result()-handicapOfDay[i]};
+            //customerScores2[i]= new Object[]{i, customers1[i].getName(), customers1[i].getTotal_result(),Integer.parseInt(customers1[i].getHandicap()),customers1[i].getTotal_result()-Integer.parseInt(customers1[i].getHandicap())};
+        }
+        TextTable resultTable2 = new TextTable(columnNames2,customerScores2);
+        resultTable2.printTable();
+    }
+
     public static void viewHandicapCalculation(){
         Object[][] customerScores=new Object[customers.size()+2][21];
         String[] columnNames = new String[21];
@@ -486,8 +557,8 @@ public class GolfScoreSystem extends JFrame {
 
                 }
             }
-
         }
+
         for (int i=0;i<customers.size();i++){
             customerScores2[i]= new Object[]{(i+1), customers1[storePosition2[i]].getName(), customers1[storePosition2[i]].getTotal_result(),Integer.parseInt(customers1[storePosition2[i]].getHandicap()),customers1[storePosition2[i]].getTotal_result()-Integer.parseInt(customers1[storePosition2[i]].getHandicap())};
             //customerScores2[i]= new Object[]{i, customers1[i].getName(), customers1[i].getTotal_result(),Integer.parseInt(customers1[i].getHandicap()),customers1[i].getTotal_result()-Integer.parseInt(customers1[i].getHandicap())};

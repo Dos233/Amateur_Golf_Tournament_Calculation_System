@@ -160,6 +160,7 @@ public class GolfScoreSystem extends JFrame {
         Scanner scanner = new Scanner(System.in);
         String name = "";
         String club = "";
+        String gender = "";
         String handicap = "";
         int serial_number = 0;
         System.out.println("=== Welcome to amateur Golf tournament system ===");
@@ -179,12 +180,14 @@ public class GolfScoreSystem extends JFrame {
                     System.out.println("9. Generate the score chart in detail");
                     System.out.println("10. Exit the program");
                     System.out.println("===================");
+
+                    // male - 24, female - 36
                     try {
                         System.out.printf("Please input serial number (e.g. 1,2) to obtain service: ");
                         serial_number = scanner.nextInt();
                         switch (serial_number){
                             case 1:
-                                enterCustomerProfile(name,club,handicap);
+                                enterCustomerProfile(name,club,gender,handicap);
                                 break;
                             case 2:
                                 viewCustomerScores();
@@ -276,6 +279,15 @@ public class GolfScoreSystem extends JFrame {
                     sumHandicap += 1;
                 }
             }
+            if (customers1[x].getGender().equals("m")){
+                if (sumHandicap>24){
+                    sumHandicap = 24;
+                }
+            }else if (customers1[x].getGender().equals("f")){
+                if (sumHandicap>36){
+                    sumHandicap = 36;
+                }
+            }
             //System.out.println("sumHandicap: "+sumHandicap);
             int temp = 36-sumHandicap;
             handicapOfDay[x] = temp;
@@ -308,15 +320,12 @@ public class GolfScoreSystem extends JFrame {
             customerScores[0][1]="Index";
             customerScores[1][1]="Par";
 
-
-
             int counter=0;
             for (int y=2;y<20;y++){
                 customerScores[0][y]=colorIndexPar[counter][4];
                 customerScores[1][y]=colorIndexPar[counter][5];
                 counter++;
             }
-
 
             for (int j=0;j<18;j++){
                 customerScores[i+2][2+j] = customers1[i].getHole_scores()[j];
@@ -339,6 +348,15 @@ public class GolfScoreSystem extends JFrame {
                     }
                 }
                 //System.out.println("sumHandicap: "+sumHandicap);
+                if (customers1[x].getGender().equals("m")){
+                    if (sumHandicap>24){
+                        sumHandicap = 24;
+                    }
+                }else if (customers1[x].getGender().equals("f")){
+                    if (sumHandicap>36){
+                        sumHandicap = 36;
+                    }
+                }
                 int temp = 36-sumHandicap;
                 customerScores[2+x][20] = temp;
                 columnNames[20] = "Handicap";
@@ -349,13 +367,14 @@ public class GolfScoreSystem extends JFrame {
         resultTable.printTable();
     }
 
-    public static void enterCustomerProfile(String name,String club,String handicap) {
+    public static void enterCustomerProfile(String name,String club,String gender,String handicap) {
         Scanner scanner = new Scanner(System.in);
         int j;
         Customer[] customers1=new Customer[customers.size()];
         for (int i=0;i<customers.size();i++){
             customers1[i]=(Customer)customers.get(i);
         }
+
         System.out.printf("Please enter the customer size: ");
         int  customerSize = scanner.nextInt();
         for (int d=0;d<customerSize;d++){
@@ -367,6 +386,8 @@ public class GolfScoreSystem extends JFrame {
             name = scanner.nextLine();
             System.out.printf("Please enter your club: ");
             club = scanner.nextLine();
+            System.out.printf("Please enter your gender (m[male] / f[female]): ");
+            gender = scanner.nextLine();
             System.out.printf("Please enter your handicap: ");
             handicap = scanner.nextLine();
 
@@ -379,11 +400,11 @@ public class GolfScoreSystem extends JFrame {
             customer.setHole_scores(scores);
             customer.setName(name);
             customer.setClub(club);
+            customer.setGender(gender);
             customer.setHandicap(handicap);
             customer.setTotal_result(sum);
             customers.add(customer);
         }
-
     }
 
     public static void viewCustomerScores(){
@@ -405,15 +426,12 @@ public class GolfScoreSystem extends JFrame {
             customerScores[0][1]="Index";
             customerScores[1][1]="Par";
 
-
-
                int counter=0;
                 for (int y=2;y<20;y++){
                     customerScores[0][y]=colorIndexPar[counter][4];
                     customerScores[1][y]=colorIndexPar[counter][5];
                     counter++;
                 }
-
 
             for (int j=0;j<18;j++){
                     customerScores[i+2][2+j] = customers1[i].getHole_scores()[j];
@@ -425,75 +443,8 @@ public class GolfScoreSystem extends JFrame {
         /*String[] columnNames = {"No.","Index","Par","A","B","C","D","E","F"};*/
         TextTable resultTable = new TextTable(columnNames,customerScores);
         resultTable.printTable();
-        /*AsciiTable at = new AsciiTable();
-        at.addRule();
-        if (customers1.length==0){
-            at.addRow("Customer:");
-            at.addRule();
-            at.addRow("Gross:");
-            at.addRule();
-            at.addRow("Handicap:");
-            at.addRule();
-            at.addRow("NetScore:");
-        }
-        if (customers1.length==1) {
-            at.addRow("Customer:", "A");
-            at.addRule();
-            at.addRow("Gross:",customers1[0].getTotal_result());
-            at.addRule();
-            at.addRow("Handicap:",customers1[0].getHandicap());
-            at.addRule();
-            at.addRow("NetScore:",customers1[0].getTotal_result()-Integer.parseInt(customers1[0].getHandicap()));
-        }
-        if (customers1.length==2) {
-            at.addRow("Customer:", "A", "B");
-            at.addRule();
-            at.addRow("Gross:",customers1[0].getTotal_result(),customers1[1].getTotal_result());
-            at.addRule();
-            at.addRow("Handicap:",customers1[0].getHandicap(),customers1[1].getHandicap());
-            at.addRule();
-            at.addRow("NetScore:",customers1[0].getTotal_result()-Integer.parseInt(customers1[0].getHandicap()),customers1[1].getTotal_result()-Integer.parseInt(customers1[1].getHandicap()));
-        }
-        if (customers1.length==3) {
-            at.addRow("Customer:", "A", "B", "C");
-            at.addRule();
-            at.addRow("Gross:",customers1[0].getTotal_result(),customers1[1].getTotal_result(),customers1[2].getTotal_result());
-            at.addRule();
-            at.addRow("Handicap:",customers1[0].getHandicap(),customers1[1].getHandicap(),customers1[2].getHandicap());
-            at.addRule();
-            at.addRow("NetScore:",customers1[0].getTotal_result()-Integer.parseInt(customers1[0].getHandicap()),customers1[1].getTotal_result()-Integer.parseInt(customers1[1].getHandicap()),customers1[2].getTotal_result()-Integer.parseInt(customers1[2].getHandicap()));
-        }
-        if (customers1.length==4) {
-            at.addRow("Customer:", "A", "B", "C", "D");
-            at.addRule();
-            at.addRow("Gross:",customers1[0].getTotal_result(),customers1[1].getTotal_result(),customers1[2].getTotal_result(),customers1[3].getTotal_result());
-            at.addRule();
-            at.addRow("Handicap:",customers1[0].getHandicap(),customers1[1].getHandicap(),customers1[2].getHandicap(),customers1[3].getHandicap());
-            at.addRule();
-            at.addRow("NetScore:",customers1[0].getTotal_result()-Integer.parseInt(customers1[0].getHandicap()),customers1[1].getTotal_result()-Integer.parseInt(customers1[1].getHandicap()),customers1[2].getTotal_result()-Integer.parseInt(customers1[3].getHandicap()),customers1[3].getTotal_result()-Integer.parseInt(customers1[3].getHandicap()));
-        }
-        if (customers1.length==5) {
-            at.addRow("Customer:", "A", "B", "C", "D", "E");
-            at.addRule();
-            at.addRow("Gross:",customers1[0].getTotal_result(),customers1[1].getTotal_result(),customers1[2].getTotal_result(),customers1[3].getTotal_result(),customers1[3].getTotal_result(),customers1[4].getTotal_result());
-            at.addRule();
-            at.addRow("Handicap:",customers1[0].getHandicap(),customers1[1].getHandicap(),customers1[2].getHandicap(),customers1[3].getHandicap(),customers1[4].getHandicap());
-            at.addRule();
-            at.addRow("NetScore:",customers1[0].getTotal_result()-Integer.parseInt(customers1[0].getHandicap()),customers1[1].getTotal_result()-Integer.parseInt(customers1[1].getHandicap()),customers1[2].getTotal_result()-Integer.parseInt(customers1[3].getHandicap()),customers1[3].getTotal_result()-Integer.parseInt(customers1[3].getHandicap()),customers1[4].getTotal_result()-Integer.parseInt(customers1[4].getHandicap()));
-        }
-        if (customers1.length==6) {
-            at.addRow("Customer:", "A", "B", "C", "D", "E", "F");
-            at.addRule();
-            at.addRow("Gross:",customers1[0].getTotal_result(),customers1[1].getTotal_result(),customers1[2].getTotal_result(),customers1[3].getTotal_result(),customers1[3].getTotal_result(),customers1[4].getTotal_result(),customers1[5].getTotal_result());
-            at.addRule();
-            at.addRow("Handicap:",customers1[0].getHandicap(),customers1[1].getHandicap(),customers1[2].getHandicap(),customers1[3].getHandicap(),customers1[4].getHandicap(),customers1[5].getHandicap());
-            at.addRule();
-            at.addRow("NetScore:",customers1[0].getTotal_result()-Integer.parseInt(customers1[0].getHandicap()),customers1[1].getTotal_result()-Integer.parseInt(customers1[1].getHandicap()),customers1[2].getTotal_result()-Integer.parseInt(customers1[3].getHandicap()),customers1[3].getTotal_result()-Integer.parseInt(customers1[3].getHandicap()),customers1[4].getTotal_result()-Integer.parseInt(customers1[4].getHandicap()),customers1[5].getTotal_result()-Integer.parseInt(customers1[5].getHandicap()));
-        }
-        at.addRule();
-        String rend = at.render();
-        System.out.println(rend);*/
     }
+
     public static void viewCustomerGrossScores(){
         Customer[] customers1=new Customer[customers.size()];
         Object[][] customerScores1=new Object[customers.size()][3];
@@ -554,12 +505,20 @@ public class GolfScoreSystem extends JFrame {
                     int temp1=storePosition2[i];
                     storePosition2[i]=storePosition2[b];
                     storePosition2[b]=temp1;
-
                 }
             }
         }
 
         for (int i=0;i<customers.size();i++){
+            if (customers1[storePosition2[i]].getGender().equals("m")){
+                if (Integer.parseInt(customers1[storePosition2[i]].getHandicap())>24){
+                    customers1[storePosition2[i]].setHandicap("24");
+                }
+            }else if (customers1[storePosition2[i]].getGender().equals("f")){
+                if (Integer.parseInt(customers1[storePosition2[i]].getHandicap())>36){
+                    customers1[storePosition2[i]].setHandicap("36");
+                }
+            }
             customerScores2[i]= new Object[]{(i+1), customers1[storePosition2[i]].getName(), customers1[storePosition2[i]].getTotal_result(),Integer.parseInt(customers1[storePosition2[i]].getHandicap()),customers1[storePosition2[i]].getTotal_result()-Integer.parseInt(customers1[storePosition2[i]].getHandicap())};
             //customerScores2[i]= new Object[]{i, customers1[i].getName(), customers1[i].getTotal_result(),Integer.parseInt(customers1[i].getHandicap()),customers1[i].getTotal_result()-Integer.parseInt(customers1[i].getHandicap())};
         }
@@ -576,6 +535,15 @@ public class GolfScoreSystem extends JFrame {
             System.out.println("NO.: "+j);
             System.out.println("Name: "+customers1[i].getName());
             System.out.println("Club: "+customers1[i].getClub());
+            if (customers1[i].getGender().equals("m")){
+                if (Integer.parseInt(customers1[i].getHandicap())>24){
+                    customers1[i].setHandicap("24");
+                }
+            }else if (customers1[i].getGender().equals("f")){
+                if (Integer.parseInt(customers1[i].getHandicap())>36){
+                    customers1[i].setHandicap("36");
+                }
+            }
             System.out.println("Handicap: "+customers1[i].getHandicap());
             System.out.println("===================");
         }

@@ -1,6 +1,7 @@
 public class Customer {
     private String name;
     private String club;
+    private String gender;
     private String handicap;
     private int[] hole_scores;
     private int total_result;
@@ -11,6 +12,10 @@ public class Customer {
 
     public void setClub(String club) {
         this.club = club;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     public void setHandicap(String handicap) {
@@ -31,6 +36,10 @@ public class Customer {
 
     public String getClub() {
         return club;
+    }
+
+    public String getGender() {
+        return gender;
     }
 
     public String getHandicap() {

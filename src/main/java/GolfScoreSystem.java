@@ -279,7 +279,7 @@ public class GolfScoreSystem extends JFrame {
                     sumHandicap += 1;
                 }
             }
-            if (customers1[x].getGender().equals("m")){
+            /*if (customers1[x].getGender().equals("m")){
                 if (sumHandicap>24){
                     sumHandicap = 24;
                 }
@@ -287,9 +287,18 @@ public class GolfScoreSystem extends JFrame {
                 if (sumHandicap>36){
                     sumHandicap = 36;
                 }
-            }
+            }*/
             //System.out.println("sumHandicap: "+sumHandicap);
             int temp = 36-sumHandicap;
+            if (customers1[x].getGender().equals("m")){
+                if (temp>24){
+                    temp = 24;
+                }
+            }else if (customers1[x].getGender().equals("f")){
+                if (temp>36){
+                    temp = 36;
+                }
+            }
             handicapOfDay[x] = temp;
         }
 
@@ -348,7 +357,7 @@ public class GolfScoreSystem extends JFrame {
                     }
                 }
                 //System.out.println("sumHandicap: "+sumHandicap);
-                if (customers1[x].getGender().equals("m")){
+                /*if (customers1[x].getGender().equals("m")){
                     if (sumHandicap>24){
                         sumHandicap = 24;
                     }
@@ -356,8 +365,19 @@ public class GolfScoreSystem extends JFrame {
                     if (sumHandicap>36){
                         sumHandicap = 36;
                     }
-                }
+                }*/
                 int temp = 36-sumHandicap;
+                /*System.out.println("temp: "+temp);
+                System.out.println("gender: "+customers1[x].getGender());*/
+                if (customers1[x].getGender().equals("m")){
+                    if (temp>24){
+                        temp = 24;
+                    }
+                }else if (customers1[x].getGender().equals("f")){
+                    if (temp>36){
+                        temp = 36;
+                    }
+                }
                 customerScores[2+x][20] = temp;
                 columnNames[20] = "Handicap";
             }

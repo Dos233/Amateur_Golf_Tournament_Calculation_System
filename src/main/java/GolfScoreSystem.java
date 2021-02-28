@@ -175,10 +175,11 @@ public class GolfScoreSystem extends JFrame {
                     System.out.println("4. View customers' net scores in console");
                     System.out.println("5. View handicap of the day calculation");
                     System.out.println("6. View net scores of the day calculation");
-                    System.out.println("7. View customer profile in console");
-                    System.out.println("8. Generate total results' bar chart for all customer");
-                    System.out.println("9. Generate the score chart in detail");
-                    System.out.println("10. Exit the program");
+                    System.out.println("7. View the point table of different handicap type");
+                    System.out.println("8. View customer profile in console");
+                    System.out.println("9. Generate total results' bar chart for all customer");
+                    System.out.println("10. Generate the score chart in detail");
+                    System.out.println("11. Exit the program");
                     System.out.println("===================");
 
                     // male - 24, female - 36
@@ -205,17 +206,20 @@ public class GolfScoreSystem extends JFrame {
                                 viewNetScoreOfDayCalculation();
                                 break;
                             case 7:
-                                viewCustomerProfile();
+                                printPointTables();
                                 break;
                             case 8:
+                                viewCustomerProfile();
+                                break;
+                            case 9:
                                 GolfScoreSystem chart = new GolfScoreSystem("Bar Chart","Total Calculation bar Chart");
                                 chart.pack();
                                 chart.setVisible( true );
                                 break;
-                            case 9:
+                            case 10:
                                 GolfScoreSystem chart1 = new GolfScoreSystem("Scores chart");
                                 break;
-                            case 10:
+                            case 11:
                                 System.out.printf("Do you really want to exit the program? y/n: ");
                                 String choice_exit1 = scanner.nextLine();
                                 String choice_exit = scanner.nextLine();
@@ -235,6 +239,188 @@ public class GolfScoreSystem extends JFrame {
                 }
         }
     }
+
+    public static void printPointTables(){
+        Scanner scanner = new Scanner(System.in);
+        // int active_score = 0;
+        Object[][] customerScores=new Object[customers.size()][21];
+        Object[][] customerScores1=new Object[customers.size()][21];
+        String[] columnNames = new String[21];
+        Customer[] customers1=new Customer[customers.size()];
+        columnNames[0]= "No.";
+        columnNames[1]= "Name";
+        columnNames[20]= "Total_Point";
+
+        for (int i=0;i<customers.size();i++){
+            customers1[i]=(Customer)customers.get(i);
+        }
+
+        if (customers1.length != 0){
+            for (int x=0;x<customers1.length;x++) {
+                int total_point = 0;
+                int total_point1 = 0;
+                int sumHandicap = 0;
+                //System.out.println("Customer length: "+customers1.length);
+                for (int a=0;a<18;a++) {
+                    int temp = customers1[x].getHole_scores()[a]-Integer.parseInt(colorIndexPar[a][5].toString());
+                    if (temp>=2) {
+                        sumHandicap+=0;
+                    }else if (temp<=0){
+                        sumHandicap+=2;
+                    }else if (temp==1){
+                        sumHandicap+=1;
+                    }
+                }
+                //System.out.println("sumHandicap: "+sumHandicap);
+                /*if (customers1[x].getGender().equals("m")){
+                    if (sumHandicap>24){
+                        sumHandicap = 24;
+                    }
+                }else if (customers1[x].getGender().equals("f")){
+                    if (sumHandicap>36){
+                        sumHandicap = 36;
+                    }
+                }*/
+                int temp = 36-sumHandicap;
+                /*System.out.println("temp: "+temp);
+                System.out.println("gender: "+customers1[x].getGender());*/
+                if (customers1[x].getGender().equals("m")){
+                    if (temp>24){
+                        temp = 24;
+                    }
+                }else if (customers1[x].getGender().equals("f")){
+                    if (temp>36){
+                        temp = 36;
+                    }
+                }
+                /*customerScores[2+x][20] = temp;
+                columnNames[20] = "Handicap";*/
+
+                if (temp == 0){
+                    int active_score = 0;
+                    int discount = 0;
+                    for (int y=0;y<18;y++){
+                        active_score = customers1[x].getHole_scores()[y] - discount;
+                        int mid_number = active_score - Integer.parseInt(colorIndexPar[y][5].toString());
+                        total_point += getPoint(mid_number);
+                        customerScores[x][y+2] = getPoint(mid_number);
+                    }
+                    customerScores[x][20] = total_point;
+                }else if (temp>=1 && temp<=18){
+                    int active_score = 0;
+                    int discount = 0;
+                    for (int y=0;y<18;y++){
+                        if (temp<=Integer.parseInt(colorIndexPar[y][4].toString())){
+                            discount = 1;
+                        }else {
+                            discount = 0;
+                        }
+                        active_score = customers1[x].getHole_scores()[y] - discount;
+                        int mid_number = active_score - Integer.parseInt(colorIndexPar[y][5].toString());
+                        total_point += getPoint(mid_number);
+                        customerScores[x][y+2] = getPoint(mid_number);
+                    }
+                    customerScores[x][20] = total_point;
+                }else if (temp>=19 && temp<=36){
+                    int active_score = 0;
+                    int discount = 0;
+                    for (int y=0;y<18;y++){
+                        if ((temp-18)<=Integer.parseInt(colorIndexPar[y][4].toString())){
+                            discount = 2;
+                        }else {
+                            discount = 1;
+                        }
+                        active_score = customers1[x].getHole_scores()[y] - discount;
+                        int mid_number = active_score - Integer.parseInt(colorIndexPar[y][5].toString());
+                        total_point += getPoint(mid_number);
+                        customerScores[x][y+2] = getPoint(mid_number);
+                    }
+                    customerScores[x][20] = total_point;
+                }
+
+                if (Integer.parseInt(customers1[x].getHandicap()) == 0){
+                    int active_score = 0;
+                    int discount = 0;
+                    for (int y=0;y<18;y++){
+                        active_score = customers1[x].getHole_scores()[y] - discount;
+                        int mid_number = active_score - Integer.parseInt(colorIndexPar[y][5].toString());
+                        total_point1 += getPoint(mid_number);
+                        customerScores1[x][y+2] = getPoint(mid_number);
+                    }
+                    customerScores1[x][20] = total_point1;
+                }else if (Integer.parseInt(customers1[x].getHandicap())>=1 && Integer.parseInt(customers1[x].getHandicap())<=18){
+                    int active_score = 0;
+                    int discount = 0;
+                    for (int y=0;y<18;y++){
+                        if (Integer.parseInt(customers1[x].getHandicap())<=Integer.parseInt(colorIndexPar[y][4].toString())){
+                            discount = 1;
+                        }else {
+                            discount = 0;
+                        }
+                        active_score = customers1[x].getHole_scores()[y] - discount;
+                        int mid_number = active_score - Integer.parseInt(colorIndexPar[y][5].toString());
+                        total_point1 += getPoint(mid_number);
+                        customerScores1[x][y+2] = getPoint(mid_number);
+                    }
+                    customerScores1[x][20] = total_point1;
+                }else if (Integer.parseInt(customers1[x].getHandicap())>=19 && Integer.parseInt(customers1[x].getHandicap())<=36){
+                    int active_score = 0;
+                    int discount = 0;
+                    for (int y=0;y<18;y++){
+                        if ((Integer.parseInt(customers1[x].getHandicap())-18)<=Integer.parseInt(colorIndexPar[y][4].toString())){
+                            discount = 2;
+                        }else {
+                            discount = 1;
+                        }
+                        active_score = customers1[x].getHole_scores()[y] - discount;
+                        int mid_number = active_score - Integer.parseInt(colorIndexPar[y][5].toString());
+                        total_point1 += getPoint(mid_number);
+                        customerScores1[x][y+2] = getPoint(mid_number);
+                    }
+                    customerScores1[x][20] = total_point1;
+                }
+                customerScores[x][0]= x+1;
+                customerScores[x][1]= customers1[x].getName();
+                customerScores1[x][0]= x+1;
+                customerScores1[x][1]= customers1[x].getName();
+                if (x==0) {
+                    for (int j = 0; j < 18; j++) {
+                        columnNames[2 + j] = "Hole_" + (j + 1);
+                    }
+                }
+            }
+        }
+        System.out.printf("Which point table do you want? c (Calculation of the day)/ t (Type in person): ");
+        String choice_table = scanner.nextLine();
+        for (int a=0;a<100;a++){
+            if (choice_table.equals("c")){
+                System.out.println("\n========== Point: Calculation of the day ==========");
+                TextTable resultTable1 = new TextTable(columnNames,customerScores);
+                resultTable1.printTable();
+                break;
+            }else if (choice_table.equals("t")){
+                System.out.println("\n========== Point: Type in person ==========");
+                TextTable resultTable2 = new TextTable(columnNames,customerScores1);
+                resultTable2.printTable();
+                break;
+            }else {
+                System.out.println("Please enter valid choice!");
+                continue;
+            }
+        }
+        System.out.println();
+    }
+
+    public static int getPoint(int mid_number){
+        int point = 0;
+        if (mid_number<=1){
+            point = Math.abs(mid_number - 2);
+        }else {
+            point = 0;
+        }
+        return point;
+    }
+
     public static void viewNetScoreOfDayCalculation(){
         Customer[] customers1=new Customer[customers.size()];
         Object[][] customerScores2=new Object[customers.size()][5];
@@ -416,6 +602,17 @@ public class GolfScoreSystem extends JFrame {
                 System.out.printf("Hole_"+j+" score: ");
                 scores[i]=scanner.nextInt();
                 sum+=scores[i];
+            }
+            for (int i=0;i<customers.size();i++){
+                if (gender.equals("m")){
+                    if (Integer.parseInt(handicap)>24){
+                        gender = "24";
+                    }
+                }else if (gender.equals("f")){
+                    if (Integer.parseInt(handicap)>36){
+                        gender = "36";
+                    }
+                }
             }
             customer.setHole_scores(scores);
             customer.setName(name);

@@ -310,7 +310,7 @@ public class GolfScoreSystem extends JFrame {
                     int active_score = 0;
                     int discount = 0;
                     for (int y=0;y<18;y++){
-                        if (temp<=Integer.parseInt(colorIndexPar[y][4].toString())){
+                        if (temp>=Integer.parseInt(colorIndexPar[y][4].toString())){
                             discount = 1;
                         }else {
                             discount = 0;
@@ -325,7 +325,7 @@ public class GolfScoreSystem extends JFrame {
                     int active_score = 0;
                     int discount = 0;
                     for (int y=0;y<18;y++){
-                        if ((temp-18)<=Integer.parseInt(colorIndexPar[y][4].toString())){
+                        if ((temp-18)>=Integer.parseInt(colorIndexPar[y][4].toString())){
                             discount = 2;
                         }else {
                             discount = 1;
@@ -352,7 +352,7 @@ public class GolfScoreSystem extends JFrame {
                     int active_score = 0;
                     int discount = 0;
                     for (int y=0;y<18;y++){
-                        if (Integer.parseInt(customers1[x].getHandicap())<=Integer.parseInt(colorIndexPar[y][4].toString())){
+                        if (Integer.parseInt(customers1[x].getHandicap())>=Integer.parseInt(colorIndexPar[y][4].toString())){
                             discount = 1;
                         }else {
                             discount = 0;
@@ -367,7 +367,7 @@ public class GolfScoreSystem extends JFrame {
                     int active_score = 0;
                     int discount = 0;
                     for (int y=0;y<18;y++){
-                        if ((Integer.parseInt(customers1[x].getHandicap())-18)<=Integer.parseInt(colorIndexPar[y][4].toString())){
+                        if ((Integer.parseInt(customers1[x].getHandicap())-18)>=Integer.parseInt(colorIndexPar[y][4].toString())){
                             discount = 2;
                         }else {
                             discount = 1;
